@@ -1,5 +1,6 @@
 package com.example.sarmad.sunshine.app;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -36,6 +38,8 @@ import java.util.Date;
  */
 public class PlaceholderFragment extends Fragment {
     private String POST_CODE;
+  //  public static final String Weather_info_String = null;
+   public final static String Weather_info_String = "com.example.sarmad.sunshine.app.Weather_info_String";
     ArrayAdapter<String> adapter  ;
     public PlaceholderFragment() {
 
@@ -265,8 +269,7 @@ public class PlaceholderFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ArrayList<String> list = new ArrayList<String>();
-        list.add("dgdzsg");
-        list.add("sdgad");
+
         //String[] s = new String[10];
 
 
@@ -295,7 +298,10 @@ public class PlaceholderFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView , View view, int position, long id) {
                 String Result=adapter.getItem(position);
-                Toast.makeText(getActivity(),Result,position).show();
+                Intent detailActivity_intent= new Intent(getActivity(),DetailActivity.class);
+                detailActivity_intent.putExtra(Intent.EXTRA_TEXT,Result);
+                startActivity(detailActivity_intent);
+                //Toast.makeText(getActivity(),Result,position).show();
 
 
             }
@@ -316,23 +322,26 @@ public class PlaceholderFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id=item.getItemId();
+       // int id=item.getItemId();
 
-        if (id==R.id.action_refresh){
-            FetchWeatherTask task = new FetchWeatherTask();
-            task.execute("Karachi");
-            return true;
-        }
-        else{
+        switch(item.getItemId()){
 
-            return super.onOptionsItemSelected(item);
+            case R.id.action_refresh :
+                FetchWeatherTask task = new FetchWeatherTask();
+                task.execute("Karachi");
+                return true;
+            case R.id.action_settings_main:
+
+                 startActivity(new Intent(getActivity(),SettingsActivity.class));
+                 return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+
         }
+
     }
-
-
-
-
-
 
 
 
