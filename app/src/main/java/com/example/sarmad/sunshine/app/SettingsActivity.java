@@ -1,4 +1,5 @@
 package com.example.sarmad.sunshine.app;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -25,10 +26,11 @@ public class SettingsActivity extends PreferenceActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Add 'general' preferences, defined in the XML file
         // TODO: Add preferences from XML
         addPreferencesFromResource(R.xml.preferences);
-
+       // SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         // For all preferences, attach an OnPreferenceChangeListener so the UI summary can be
         // updated when the preference changes.
         // TODO: Add preferences
@@ -41,6 +43,7 @@ public class SettingsActivity extends PreferenceActivity
      * is changed.)
      */
     private void bindPreferenceSummaryToValue(Preference preference) {
+
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(this);
 

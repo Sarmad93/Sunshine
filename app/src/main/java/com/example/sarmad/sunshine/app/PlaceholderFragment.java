@@ -1,9 +1,12 @@
 package com.example.sarmad.sunshine.app;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,6 +52,9 @@ public class PlaceholderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+
+
     }
 
     class FetchWeatherTask extends AsyncTask<String,Void,String[]>{
@@ -328,11 +334,14 @@ public class PlaceholderFragment extends Fragment {
 
             case R.id.action_refresh :
                 FetchWeatherTask task = new FetchWeatherTask();
-                task.execute("Karachi");
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+               String Location = prefs.getString(getString(R.string.pref_location_key),
+                       getString(R.string.pref_location_default));
+                Log.v("Location_",Location);
+                task.execute(Location);
                 return true;
             case R.id.action_settings_main:
-
-                 startActivity(new Intent(getActivity(),SettingsActivity.class));
+                startActivity(new Intent(getActivity(),SettingsActivity.class));
                  return true;
 
             default:
