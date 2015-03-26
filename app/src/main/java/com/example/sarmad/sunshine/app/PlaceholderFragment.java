@@ -3,11 +3,13 @@ package com.example.sarmad.sunshine.app;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +43,8 @@ import java.util.Date;
  */
 public class PlaceholderFragment extends Fragment {
     private String POST_CODE;
+    public final String LOG_Tag=FetchWeatherTask.class.getSimpleName();
+
   //  public static final String Weather_info_String = null;
    public final static String Weather_info_String = "com.example.sarmad.sunshine.app.Weather_info_String";
     ArrayAdapter<String> adapter  ;
@@ -57,7 +61,27 @@ public class PlaceholderFragment extends Fragment {
 
     }
 
+
+    private void UpdateWeather() {
+        FetchWeatherTask task = new FetchWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String Location = prefs.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+
+
+
+        task.execute(Location);
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        UpdateWeather();
+    }
+
     class FetchWeatherTask extends AsyncTask<String,Void,String[]>{
+
 
 
 
@@ -72,10 +96,23 @@ public class PlaceholderFragment extends Fragment {
 
 
 
-        private String formatHighLows(double high, double low) {
-            // For presentation, assume the user doesn't care about tenths of a degree.
+        private String formatHighLows(double high, double low ,String unitType) {
+
+            if (unitType.equals(getString(R.string.pref_units_imperial))) {
+                                high = (high * 1.8) + 32;
+                                low = (low * 1.8) + 32;
+                            }
+            else if (!unitType.equals(getString(R.string.pref_units_metric))) {
+                                Log.d(LOG_Tag, "Unit type not found: " + unitType);
+                            }
+
+
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
+
+
+
+
 
             String highLowStr = roundedHigh + "/" + roundedLow;
             return highLowStr;
@@ -98,6 +135,14 @@ public class PlaceholderFragment extends Fragment {
             JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
 
             String[] resultStrs = new String[Days];
+
+                SharedPreferences sharedPrefs =
+                                            PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            String unitType = sharedPrefs.getString(
+                                            getString(R.string.pref_units_key),
+                                            getString(R.string.pref_units_metric));
+
+
             for(int i = 0; i < weatherArray.length(); i++) {
                 // For now, using the format "Day, description, hi/low"
                 String day;
@@ -123,7 +168,7 @@ public class PlaceholderFragment extends Fragment {
                 double high = temperatureObject.getDouble(OWM_MAX);
                 double low = temperatureObject.getDouble(OWM_MIN);
 
-                highAndLow = formatHighLows(high, low);
+                highAndLow = formatHighLows(high, low,unitType);
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
 
             }
@@ -150,6 +195,10 @@ public class PlaceholderFragment extends Fragment {
             BufferedReader reader = null;
 // Will contain the raw JSON response as a string.
             String forecastJsonStr = null;
+
+
+
+
 
 
 
@@ -295,7 +344,7 @@ public class PlaceholderFragment extends Fragment {
              * Implementers can call getItemAtPosition(position) if they need
              * to access the data associated with the selected item.
              *
-             * @param parent   The AdapterView where the click happened.
+             * @param adapterView   The AdapterView where the click happened.
              * @param view     The view within the AdapterView that was clicked (this
              *                 will be a view provided by the adapter)
              * @param position The position of the view in the adapter.
@@ -333,12 +382,7 @@ public class PlaceholderFragment extends Fragment {
         switch(item.getItemId()){
 
             case R.id.action_refresh :
-                FetchWeatherTask task = new FetchWeatherTask();
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-               String Location = prefs.getString(getString(R.string.pref_location_key),
-                       getString(R.string.pref_location_default));
-                Log.v("Location_",Location);
-                task.execute(Location);
+                UpdateWeather();
                 return true;
             case R.id.action_settings_main:
                 startActivity(new Intent(getActivity(),SettingsActivity.class));
@@ -351,6 +395,9 @@ public class PlaceholderFragment extends Fragment {
         }
 
     }
+
+
+
 
 
 
