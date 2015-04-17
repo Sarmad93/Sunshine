@@ -19,6 +19,8 @@ public class MainActivity extends ActionBarActivity {
     private String LOG_TAG=MainActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Log.v(LOG_TAG,"in oncreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
@@ -84,4 +86,34 @@ private void openPreferedLocationMap(){
 
 }
 
+    @Override
+    protected void onStart() {
+        Log.v(LOG_TAG,"in  onstart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.v(LOG_TAG,"in onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.v(LOG_TAG,"in onStop");
+        super.onStop();
+    }
+
+
+    @Override
+    protected void onResume() {
+        Log.v(LOG_TAG,"in onResume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.v(LOG_TAG,"in onDestroy");
+        super.onDestroy();
+    }
 }
