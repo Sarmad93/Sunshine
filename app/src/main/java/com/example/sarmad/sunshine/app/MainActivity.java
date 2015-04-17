@@ -1,13 +1,22 @@
 package com.example.sarmad.sunshine.app;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.net.URI;
 
 
 public class MainActivity extends ActionBarActivity {
 
+    private String LOG_TAG=MainActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,12 +49,39 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
 
+
+        else if(id==R.id.action_map){
+            openPreferedLocationMap();
+          return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
 
 
 
+private void openPreferedLocationMap(){
 
+    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+    String Location=sharedPrefs.getString(getString(R.string.pref_location_key),
+            getString(R.string.pref_location_key));
+
+    Uri geoLocation= Uri.parse("geo:0,0?").buildUpon().appendQueryParameter("q",Location).build();
+
+    Intent mapIntent= new Intent(Intent.ACTION_VIEW);
+    mapIntent.setData(geoLocation);
+
+    if(mapIntent.resolveActivity(getPackageManager())!=null){
+        startActivity(mapIntent);
+
+    }
+
+    else{
+        Log.d(LOG_TAG, "Couldn't call " + Location + ", no receiving apps installed!");
+    }
+
+
+}
 
 }
