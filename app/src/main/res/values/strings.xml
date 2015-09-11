@@ -23,6 +23,7 @@
     <string name="pref_location_default">Karachi</string>
 
     <string name="pref_temperature_default">metric</string>
-
+    <string name="action_map">MapLocation</string>
+    <string name="action_share">Share</string>
 
 </resources>
